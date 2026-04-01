@@ -1,6 +1,22 @@
+import { Outfit, Inter, Noto_Serif } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { siteConfig } from "@/lib/site";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const notoSerif = Noto_Serif({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-noto-serif",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -33,9 +49,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="vi"
+      className={`h-full antialiased ${outfit.variable} ${inter.variable} ${notoSerif.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body
-        className="min-h-full bg-background text-foreground"
+        className="min-h-full font-sans bg-background text-foreground selection:bg-accent/10 selection:text-accent"
         suppressHydrationWarning
       >
         {children}
