@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model story {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  sourceUrl   String?   @unique @map("source_url")
+  description String?
+  cover       String?
+  author      String?
+  status      String?
+
+  chapters    chapter[]
+  genres      storyGenre[]
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@index([slug])
+  @@map("stories")
+}
+
+model chapter {
+  id            Int      @id @default(autoincrement())
+  storyId       Int      @map("story_id")
+  sourceUrl     String?  @unique @map("source_url")
+  chapterNumber Int      @map("chapter_number")
+  title         String
+  content       String   @db.Text
+  contentHash   String?  @map("content_hash")
+
+  story         story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@index([storyId])
+  @@index([storyId, chapterNumber])
+  @@unique([storyId, chapterNumber])
+  @@map("chapters")
+}
+
+model genre {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique
+
+  stories   storyGenre[]
+
+  @@map("genres")
+}
+
+model storyGenre {
+  storyId Int @map("story_id")
+  genreId Int @map("genre_id")
+
+  story   story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  genre   genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@id([storyId, genreId])
+  @@map("story_genres")
+}
