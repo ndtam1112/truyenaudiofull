@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/metadata";
 import { getChapterDetail } from "@/lib/stories";
+import { SaveReadingProgress } from "@/components/save-reading-progress";
 
 type ChapterDetailPageProps = {
   params: Promise<{
@@ -53,7 +54,7 @@ export default async function ChapterDetailPage({
               <svg className="w-4 h-4 text-accent transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              <h1 className="text-sm font-bold text-foreground truncate group-hover:text-accent transition-colors">
+              <h1 className="text-sm font-semibold text-foreground truncate group-hover:text-accent transition-colors">
                 {story.title}
               </h1>
            </Link>
@@ -78,7 +79,7 @@ export default async function ChapterDetailPage({
              <h2 className="font-display novel-title text-3xl md:text-5xl text-foreground">
                 {chapter.title}
              </h2>
-             <div className="flex items-center justify-center gap-6 pt-4 text-xs font-bold text-muted/40 uppercase tracking-widest">
+             <div className="flex items-center justify-center gap-6 pt-4 text-xs font-semibold text-muted/40 uppercase tracking-widest">
                 <span>{chapter.readingTime}</span>
                 <span>•</span>
                 <span>Chương {chapter.order}</span>
@@ -88,7 +89,7 @@ export default async function ChapterDetailPage({
           {/* Chapter Content */}
           <div className="novel-content px-4 md:px-0">
              {chapter.content.map((line, idx) => (
-                <p key={idx} className="mb-6 first-letter:text-2xl first-letter:font-bold first-letter:mr-1">
+                <p key={idx} className="mb-8 leading-relaxed opacity-95">
                   {line}
                 </p>
              ))}
@@ -103,11 +104,11 @@ export default async function ChapterDetailPage({
                       className="flex flex-col gap-2 p-5 rounded-2xl bg-surface-strong border border-transparent hover:border-accent/40 group transition-all"
                    >
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted/60 group-hover:text-accent/60">Chương trước</span>
-                      <span className="text-sm font-bold text-foreground line-clamp-1">← Quay lại</span>
+                      <span className="text-sm font-semibold text-foreground line-clamp-1">← Quay lại</span>
                    </Link>
                 ) : <div className="p-5 rounded-2xl bg-surface-strong/30 border border-transparent opacity-50 cursor-not-allowed">
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted/60">Chương trước</span>
-                      <span className="text-sm font-bold text-foreground">Hết chương</span>
+                      <span className="text-sm font-semibold text-foreground">Hết chương</span>
                     </div>}
 
                 {nextChapter ? (
@@ -116,11 +117,11 @@ export default async function ChapterDetailPage({
                       className="flex flex-col gap-2 p-5 rounded-2xl bg-accent text-white shadow-xl shadow-accent/20 hover:brightness-105 group transition-all text-right"
                    >
                       <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Chương tiếp</span>
-                      <span className="text-sm font-bold line-clamp-1">Tiếp tục →</span>
+                      <span className="text-sm font-semibold line-clamp-1">Tiếp tục →</span>
                    </Link>
                 ) : <div className="p-5 rounded-2xl bg-surface-strong/30 border border-transparent opacity-50 cursor-not-allowed text-right">
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted/60">Chương tiếp</span>
-                      <span className="text-sm font-bold text-foreground">Hết chương</span>
+                      <span className="text-sm font-semibold text-foreground">Hết chương</span>
                     </div>}
              </div>
              
@@ -158,6 +159,14 @@ export default async function ChapterDetailPage({
             </svg>
          </button>
       </nav>
+      
+      <SaveReadingProgress 
+        storySlug={story.slug}
+        storyTitle={story.title}
+        chapterId={chapter.id}
+        chapterOrder={chapter.order}
+        chapterTitle={chapter.title}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Outfit, Inter, Noto_Serif } from "next/font/google";
+import { Outfit, Inter, Noto_Serif, Lexend } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { siteConfig } from "@/lib/site";
@@ -8,9 +8,9 @@ const outfit = Outfit({
   variable: "--font-outfit",
 });
 
-const inter = Inter({
+const lexend = Lexend({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-lexend",
 });
 
 const notoSerif = Noto_Serif({
@@ -51,7 +51,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`h-full antialiased ${outfit.variable} ${inter.variable} ${notoSerif.variable}`}
+      className={`h-full antialiased ${outfit.variable} ${lexend.variable} ${notoSerif.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

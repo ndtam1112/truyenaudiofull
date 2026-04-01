@@ -60,9 +60,9 @@ export function ContinueReadingRow({ stories }: ContinueReadingRowProps) {
   return (
     <div id="continue-reading">
       <Row
-        eyebrow="Dang doc do"
+        eyebrow="Đang đọc dở"
         title="Tiếp tục đọc"
-        description="Quay lai dung chuong dang doc do va tiep tuc ngay khong can tim lai."
+        description="Quay lại đúng chương đang đọc dở và tiếp tục ngay không cần tìm lại."
       >
         {items.map(({ entry, story }) => (
           <article
@@ -89,13 +89,13 @@ export function ContinueReadingRow({ stories }: ContinueReadingRowProps) {
               <div className="space-y-3 p-4 text-foreground xl:flex xl:flex-col xl:justify-between">
                 <div>
                   <p className="text-[11px] font-semibold tracking-[0.24em] text-accent uppercase">
-                    Tiep tuc doc
+                    Tiếp tục đọc
                   </p>
                   <h3 className="mt-2 line-clamp-2 text-base font-semibold xl:text-[1.15rem]">
                     {story.title}
                   </h3>
                   <p className="mt-1 text-xs text-muted xl:text-sm">
-                    Chapter {entry.chapterOrder} | {entry.chapterTitle}
+                    Chương {entry.chapterOrder} | {entry.chapterTitle}
                   </p>
                 </div>
                 <div className="space-y-2">

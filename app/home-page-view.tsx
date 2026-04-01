@@ -7,6 +7,7 @@ import { Row } from "@/components/row";
 import { StoryCard } from "@/components/story-card";
 import { buildMetadata } from "@/lib/metadata";
 import { getHomePage, getStoriesPage } from "@/lib/stories";
+import { ContinueReadingRow } from "@/components/continue-reading-row";
 
 export const metadata: Metadata = buildMetadata({
   title: "NeuralStudio - Đọc truyện online miễn phí",
@@ -24,7 +25,7 @@ type HomePageViewProps = {
 
 export default async function HomePageView({ searchParams: searchParamsPromise }: HomePageViewProps) {
   const searchParams = (await searchParamsPromise) || {};
-  const { featuredStory, stories, latestStories, popularStories, genres } = await getHomePage();
+  const { featuredStory, latestStories, popularStories, genres } = await getHomePage();
   
   const results = await getStoriesPage({
     q: searchParams.q,
@@ -55,6 +56,8 @@ export default async function HomePageView({ searchParams: searchParamsPromise }
         
         {/* Featured & Rankings Section */}
         {!hasSearch && <HeroBanner story={featuredStory} topStories={popularStories} />}
+
+        {!hasSearch && <ContinueReadingRow stories={latestStories} />}
 
         {hasSearch ? (
           <Row
@@ -117,11 +120,51 @@ export default async function HomePageView({ searchParams: searchParamsPromise }
                   </div>
                 </div>
 
+                {/* 
                 <div className="bg-accent/5 p-6 rounded-2xl border border-accent/10">
                    <h2 className="text-sm font-black uppercase tracking-widest text-accent mb-4">Bạn muốn viết truyện?</h2>
                    <p className="text-xs text-muted leading-relaxed mb-4">Trở thành tác giả của NeuralStudio và chia sẻ đam mê của bạn với hàng ngàn độc giả.</p>
                    <Link href="/author/register" className="inline-flex w-full items-center justify-center bg-accent text-white py-2.5 rounded-xl text-xs font-bold shadow-md hover:brightness-105 transition-all">
                       Đăng ký ngay
+                   </Link>
+                </div>
+                */}
+
+                {/* Bảng Xếp Hạng (Leaderboard) */}
+                <div className="bg-white p-6 rounded-[2rem] border border-border/80 shadow-xl shadow-black/[0.02]">
+                   <div className="flex items-center gap-3 mb-6">
+                      <span className="w-1.5 h-6 bg-accent rounded-full" />
+                      <h2 className="text-lg font-black novel-title">Bảng xếp hạng</h2>
+                   </div>
+                   
+                   <div className="space-y-5">
+                      {popularStories.slice(0, 5).map((story, index) => (
+                         <div key={`rank-${story.id}`} className="flex items-center gap-4 group">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm shrink-0 transition-colors ${
+                               index === 0 ? 'bg-amber-100 text-amber-600' :
+                               index === 1 ? 'bg-slate-100 text-slate-500' :
+                               index === 2 ? 'bg-orange-100 text-orange-700' :
+                               'bg-surface text-muted group-hover:bg-accent/10 group-hover:text-accent'
+                            }`}>
+                               {index + 1}
+                            </div>
+                            
+                            <div className="flex-1 min-w-0 flex flex-col justify-center">
+                               <Link href={`/truyen/${story.slug}`}>
+                                  <h4 className="text-sm font-bold text-foreground line-clamp-1 group-hover:text-accent transition-colors">{story.title}</h4>
+                               </Link>
+                               <div className="flex items-center gap-3 mt-1.5">
+                                  <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">{story.genre}</p>
+                                  <span className="w-1 h-1 rounded-full bg-border" />
+                                  <p className="text-[10px] font-bold text-accent">{story.viewsLabel}</p>
+                               </div>
+                            </div>
+                         </div>
+                      ))}
+                   </div>
+                   
+                   <Link href="/rankings" className="mt-8 flex items-center justify-center w-full py-3.5 bg-surface hover:bg-surface-strong text-foreground rounded-xl text-xs font-bold transition-all border border-border/40">
+                      Xem Tất Cả
                    </Link>
                 </div>
               </aside>
@@ -134,7 +177,7 @@ export default async function HomePageView({ searchParams: searchParamsPromise }
               description="Khám phá những vùng đất thần tiên qua các tác phẩm đặc sắc."
               href="/genre/tien-hiep"
             >
-              {stories.slice(5, 10).map((story) => (
+              {popularStories.slice(5, 10).map((story) => (
                 <StoryCard
                   key={`category-${story.id}`}
                   story={story}

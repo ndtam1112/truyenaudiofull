@@ -25,7 +25,7 @@ export function Row({
       <div className="flex items-end justify-between border-b border-border pb-4">
         <div className="space-y-1">
           {eyebrow && (
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-accent">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
               {eyebrow}
             </p>
           )}

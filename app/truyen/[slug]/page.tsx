@@ -53,72 +53,103 @@ export default async function StoryDetailPage({
       
       <main className="page-shell py-8 md:py-12">
         {/* Story Breadcrumb */}
-        <nav className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted/60 mb-8 overflow-hidden whitespace-nowrap">
+        <nav className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-muted/40 mb-6 overflow-hidden whitespace-nowrap">
            <Link href="/" className="hover:text-accent transition-colors shrink-0">Trang chủ</Link>
-           <span className="shrink-0">/</span>
+           <span className="opacity-20 shrink-0">/</span>
            <span className="shrink-0">{story.genre}</span>
-           <span className="shrink-0">/</span>
-           <span className="text-foreground truncate">{story.title}</span>
+           <span className="opacity-20 shrink-0">/</span>
+           <span className="text-foreground/40 truncate">{story.title}</span>
         </nav>
 
-        {/* Story Header Section */}
-        <section className="bg-white border border-border rounded-3xl p-6 md:p-10 shadow-xl shadow-black/[0.02]">
-           <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
-              {/* Cover Image */}
-              <div className="relative w-full md:w-64 aspect-[3/4] shrink-0 overflow-hidden rounded-2xl shadow-2xl shadow-black/10">
-                 {story.cover ? (
-                    <Image 
-                      src={story.cover} 
-                      alt={story.title} 
-                      fill 
-                      priority
-                      className="object-cover"
-                    />
-                 ) : (
-                    <div className="h-full w-full bg-surface-strong" />
-                 )}
-                 <div className="absolute top-4 left-4">
-                    <span className={`badge ${story.status === 'Completed' ? 'badge-completed' : 'badge-ongoing'} shadow-lg border-none`}>
-                       {story.status === 'Completed' ? 'Hoàn thành' : 'Đang ra'}
-                    </span>
+        {/* Story Header Section - Compact & Mobile Optimized */}
+        <section className="bg-white border border-border/80 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-xl shadow-black/[0.02]">
+           <div className="flex flex-col md:flex-row gap-6 lg:gap-12 items-start">
+              
+              {/* Mobile: Cover + Title Side-by-Side. Desktop: Cover Only */}
+              <div className="flex gap-5 md:contents w-full">
+                 {/* Cover Image */}
+                 <div className="relative w-[100px] sm:w-[120px] md:w-64 aspect-[3/4] shrink-0 overflow-hidden rounded-xl md:rounded-2xl shadow-lg md:shadow-2xl shadow-black/10">
+                    {story.cover ? (
+                       <Image 
+                         src={story.cover} 
+                         alt={story.title} 
+                         fill 
+                         priority
+                         sizes="(max-width: 768px) 120px, 256px"
+                         className="object-cover"
+                       />
+                    ) : (
+                       <div className="h-full w-full bg-surface-strong" />
+                    )}
+                    <div className="absolute top-2 left-2 md:top-4 md:left-4">
+                       <span className={`badge ${story.status === 'Completed' ? 'badge-completed' : 'badge-ongoing'} shadow-md border-none scale-75 md:scale-100 origin-top-left`}>
+                          {story.status === 'Completed' ? 'Hoàn thành' : 'Đang ra'}
+                       </span>
+                    </div>
+                 </div>
+
+                 {/* Mobile Only: Title & Basic Info */}
+                 <div className="flex flex-col justify-center flex-1 md:hidden">
+                    <h1 className="font-display novel-title text-xl sm:text-2xl text-foreground mb-2 line-clamp-3 leading-tight">
+                       {story.title}
+                    </h1>
+                    <p className="text-xs font-semibold text-muted mb-1">{story.author}</p>
+                    <span className="text-[10px] font-bold text-accent uppercase tracking-widest">{story.genre}</span>
                  </div>
               </div>
 
               {/* Story Info */}
-              <div className="flex-1 space-y-6">
-                 <h1 className="font-display novel-title text-3xl md:text-5xl text-foreground">
+              <div className="flex-1 flex flex-col w-full">
+                 {/* Desktop Title */}
+                 <h1 className="hidden md:block font-display novel-title text-3xl md:text-5xl text-foreground mb-6">
                     {story.title}
                  </h1>
                  
-                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 border-y border-border">
-                    <div className="space-y-1">
-                       <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Tác giả</p>
-                       <p className="text-sm font-bold">{story.author}</p>
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Số chương</p>
-                       <p className="text-sm font-bold">{story.chapterCount}</p>
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Lượt xem</p>
-                       <p className="text-sm font-bold">{story.viewsLabel}</p>
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Thể loại</p>
-                       <p className="text-sm font-bold text-accent">{story.genre}</p>
-                    </div>
-                 </div>
-
-                 <div className="flex flex-wrap gap-4 pt-4">
+                 {/* Mobile Actions: immediately below cover/title row */}
+                 <div className="flex gap-3 mb-6 md:hidden w-full">
                     {firstChapter && (
                        <Link 
                           href={`/truyen/${story.slug}/chuong/${firstChapter.id}`}
-                          className="inline-flex h-12 items-center justify-center bg-accent text-white px-10 rounded-xl font-bold text-sm shadow-lg shadow-accent/20 hover:brightness-105 transition-all"
+                          className="flex-1 h-12 inline-flex items-center justify-center bg-accent text-white rounded-xl font-bold text-sm shadow-md shadow-accent/20 active:scale-95 transition-all"
                        >
                           Đọc Từ Đầu
                        </Link>
                     )}
-                    <button className="inline-flex h-12 items-center justify-center bg-surface-strong text-foreground border border-border px-8 rounded-xl font-bold text-sm hover:bg-white transition-all">
+                    <button className="flex-1 h-12 inline-flex items-center justify-center bg-surface-strong text-foreground border border-border rounded-xl font-bold text-sm active:scale-95 transition-all">
+                       Vào Kệ
+                    </button>
+                 </div>
+
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 md:py-0 md:border-y border-border md:mb-6 mt-2 md:mt-0">
+                    <div className="space-y-0.5 hidden md:block border-b border-border md:border-none pb-4 md:pb-0">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Tác giả</p>
+                       <p className="text-sm font-bold text-foreground/80 truncate border-l border-accent pl-3 mt-1.5">{story.author}</p>
+                    </div>
+                    <div className="space-y-0.5 hidden md:block border-b border-border md:border-none pb-4 md:pb-0">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Thể loại</p>
+                       <p className="text-sm font-bold text-accent border-l border-accent pl-3 mt-1.5">{story.genre}</p>
+                    </div>
+                    <div className="space-y-0.5 border-t border-border md:border-none pt-4 md:pt-0">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Chương</p>
+                       <p className="text-sm font-bold text-foreground/80 md:border-l md:border-accent md:pl-3 md:mt-1.5">{story.chapterCount}</p>
+                    </div>
+                    <div className="space-y-0.5 border-t border-border md:border-none pt-4 md:pt-0">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Thời gian</p>
+                       <p className="text-sm font-bold text-foreground/80 md:border-l md:border-accent md:pl-3 md:mt-1.5">{story.totalReadingTime}</p>
+                    </div>
+                 </div>
+
+                 {/* Desktop Actions */}
+                 <div className="hidden md:flex flex-row gap-4 pt-2">
+                    {firstChapter && (
+                       <Link 
+                          href={`/truyen/${story.slug}/chuong/${firstChapter.id}`}
+                          className="inline-flex h-14 items-center justify-center bg-accent text-white px-12 rounded-2xl font-bold text-base shadow-xl shadow-accent/30 hover:scale-[1.02] hover:brightness-110 active:scale-95 transition-all"
+                       >
+                          Đọc Từ Đầu
+                       </Link>
+                    )}
+                    <button className="inline-flex h-14 items-center justify-center bg-white text-foreground border border-border px-10 rounded-2xl font-bold text-sm hover:bg-slate-50 transition-all active:scale-95">
                        Thêm Vào Kệ
                     </button>
                  </div>
@@ -181,7 +212,7 @@ export default async function StoryDetailPage({
                           className="flex gap-4 group"
                        >
                           <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-lg shadow-sm">
-                             {s.cover ? <Image src={s.cover} alt={s.title} fill className="object-cover" /> : <div className="h-full w-full bg-surface-strong" />}
+                             {s.cover ? <Image src={s.cover} alt={s.title} fill sizes="48px" className="object-cover" /> : <div className="h-full w-full bg-surface-strong" />}
                           </div>
                           <div className="min-w-0 flex flex-col justify-center">
                              <h4 className="text-xs font-bold text-foreground line-clamp-1 group-hover:text-accent transition-colors">{s.title}</h4>

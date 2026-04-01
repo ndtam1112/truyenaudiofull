@@ -37,11 +37,11 @@ export function Header({ genres, initialQuery = "" }: HeaderProps) {
             </Link>
             
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-sm font-semibold text-muted hover:text-accent transition-colors">
+              <Link href="/" className="text-sm font-medium text-muted hover:text-accent transition-colors">
                 Trang chủ
               </Link>
               <div className="relative group">
-                <button className="text-sm font-semibold text-muted hover:text-accent transition-colors flex items-center gap-1">
+                <button className="text-sm font-medium text-muted hover:text-accent transition-colors flex items-center gap-1">
                   Thể loại
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -73,7 +73,7 @@ export function Header({ genres, initialQuery = "" }: HeaderProps) {
             </button>
             <Link 
               href="/author/login" 
-              className="text-sm font-bold text-accent px-4 py-2 rounded-full border border-accent/20 hover:bg-accent/5 transition-colors"
+              className="text-sm font-semibold text-accent px-4 py-2 rounded-full border border-accent/20 hover:bg-accent/5 transition-colors"
             >
               Đăng nhập
             </Link>

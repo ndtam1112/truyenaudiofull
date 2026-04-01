@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Noto Serif", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: var(--font-lexend), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-noto-serif), "Noto Serif", Georgia, serif;
 
   --color-background: #fdfaf7;
   --color-foreground: #2d2d2d;
@@ -66,7 +66,7 @@ body {
 }
 
 .novel-title {
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }

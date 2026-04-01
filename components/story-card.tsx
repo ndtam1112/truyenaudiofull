@@ -23,8 +23,9 @@ export function StoryCard({ story, variant = "default", rank }: StoryCardProps) 
               src={story.cover} 
               alt={story.title} 
               fill 
-              sizes="56px"
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (
             <div className="h-full w-full bg-surface-strong" />
@@ -97,13 +98,13 @@ export function StoryCard({ story, variant = "default", rank }: StoryCardProps) 
         </div>
       </div>
       <div className="mt-3 px-1">
-        <h3 className="line-clamp-2 text-sm font-extrabold text-foreground leading-snug group-hover:text-accent transition-colors">
+        <h3 className="line-clamp-2 text-sm font-bold text-foreground leading-snug group-hover:text-accent transition-colors">
           {story.title}
         </h3>
-        <p className="mt-1 text-[11px] font-semibold text-muted">
+        <p className="mt-1 text-[11px] font-medium text-muted">
           {story.author}
         </p>
-        <div className="mt-2 flex items-center gap-2 text-[10px] font-bold text-muted/60">
+        <div className="mt-2 flex items-center gap-2 text-[10px] font-semibold text-muted/60">
            <span>{story.genre}</span>
            <span>•</span>
            <span>{story.viewsLabel} lượt xem</span>

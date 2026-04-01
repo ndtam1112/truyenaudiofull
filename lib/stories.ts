@@ -23,6 +23,8 @@ export type Story = {
   coverAccentFrom: string;
   coverAccentTo: string;
   chapterCount: number;
+  totalReadingTime: string;
+  viewsCount: number;
   viewsLabel: string;
   status: string;
   chapters: Chapter[];
@@ -55,17 +57,32 @@ function buildCoverLabel(title: string) {
 
 function buildReadingTime(content: string) {
   const words = content.trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.ceil(words / 200));
-  return `${minutes} min`;
+  const minutes = Math.max(1, Math.ceil(words / 250));
+  return `${minutes} phút`;
 }
 
 function buildExcerpt(content: string) {
   return content.length > 140 ? `${content.slice(0, 140)}...` : content;
 }
 
-function buildViewsLabel(id: number, chapterCount: number) {
-  const value = 12 + ((id * 11 + chapterCount * 7) % 220) / 10;
-  return `${value.toFixed(1)}k`;
+function buildViews(id: number, chapterCount: number) {
+  const seed = (id * 9301 + chapterCount * 49297) % 233280;
+  const rand = seed / 233280;
+  const baseViews = 5000 + (chapterCount * 2500); 
+  let totalViews = Math.floor(baseViews * (0.5 + rand * 2.5));
+
+  if (chapterCount > 200 && rand > 0.7) {
+     totalViews = Math.floor(totalViews * (1.5 + rand * 3));
+  }
+
+  let label = totalViews.toLocaleString('vi-VN');
+  if (totalViews >= 1000000) {
+    label = `${(totalViews / 1000000).toFixed(1)}M`;
+  } else if (totalViews >= 1000) {
+    label = `${(totalViews / 1000).toFixed(1)}K`;
+  }
+  
+  return { count: totalViews, label };
 }
 
 export function slugifyGenre(value: string) {
@@ -82,43 +99,35 @@ function mapChapter(chapter: {
   id: number;
   chapterNumber: number;
   title: string;
-  content: string;
+  content: string | string[];
 }): Chapter {
+  const content = Array.isArray(chapter.content) 
+    ? chapter.content 
+    : (chapter.content || "").split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
+
   return {
     id: String(chapter.id),
     slug: String(chapter.id),
     title: chapter.title,
     order: chapter.chapterNumber,
-    readingTime: buildReadingTime(chapter.content),
-    excerpt: buildExcerpt(chapter.content),
-    content: chapter.content
-      .split(/\r?\n\r?\n/)
-      .map((paragraph) => paragraph.trim())
-      .filter(Boolean),
+    readingTime: buildReadingTime(Array.isArray(content) ? content.join(" ") : ""),
+    excerpt: buildExcerpt(Array.isArray(content) ? content.join(" ") : ""),
+    content: content,
   };
 }
 
-function mapStory(story: {
-  id: number;
-  slug: string;
-  title: string;
-  author: string | null;
-  description: string | null;
-  cover: string | null;
-  chapters: Array<{
-    id: number;
-    chapterNumber: number;
-    title: string;
-    content: string;
-  }>;
-  genres: Array<{
-    genre: {
-      name: string;
-    };
-  }>;
-}): Story {
-  const genres = story.genres.map((item) => item.genre.name).filter(Boolean);
-  const chapterCount = story.chapters.length;
+function mapStory(story: any): Story {
+  const genres = story.genres?.map((item: any) => item.genre.name).filter(Boolean) || [];
+  const chapterCount = story._count?.chapters ?? story.chapters?.length ?? 0;
+
+  const totalReadingTime = story.chapters?.length 
+    ? `${Math.max(1, Math.round(story.chapters.reduce((acc: number, ch: any) => {
+        const words = (typeof ch.content === 'string' ? ch.content : Array.isArray(ch.content) ? ch.content.join(" ") : "").split(/\s+/).length;
+        return acc + (words / 250);
+      }, 0)))} phút`
+    : `${Math.round(chapterCount * 3.5)} phút`;
+
+  const views = buildViews(story.id || 1, chapterCount);
 
   return {
     id: String(story.id),
@@ -133,9 +142,11 @@ function mapStory(story: {
     coverAccentFrom: "#ef4444",
     coverAccentTo: "#7c2d12",
     chapterCount,
-    viewsLabel: buildViewsLabel(story.id, chapterCount),
+    totalReadingTime,
+    viewsCount: views.count,
+    viewsLabel: views.label,
     status: chapterCount > 24 ? "Full" : "New",
-    chapters: story.chapters.map(mapChapter),
+    chapters: story.chapters ? story.chapters.map(mapChapter) : [],
   };
 }
 
@@ -148,15 +159,9 @@ async function fetchStories() {
       author: true,
       description: true,
       cover: true,
-      chapters: {
+      _count: {
         select: {
-          id: true,
-          chapterNumber: true,
-          title: true,
-          content: true,
-        },
-        orderBy: {
-          chapterNumber: "asc",
+          chapters: true,
         },
       },
       genres: {
@@ -217,21 +222,15 @@ function paginateStories(stories: Story[], query: StoryQuery = {}): StoryPage {
 export async function getHomePage() {
   const mappedStories = await fetchStories();
   const genres = Array.from(new Set(mappedStories.flatMap((story) => story.genres))).filter(Boolean);
-  const categorySections = genres.slice(0, 3).map((genre) => ({
-    name: genre,
-    slug: slugifyGenre(genre),
-    stories: mappedStories.filter((story) => story.genres.includes(genre)).slice(0, 8),
-  }));
+  
   const popularStories = [...mappedStories]
-    .sort((left, right) => right.chapterCount - left.chapterCount || right.title.localeCompare(left.title))
-    .slice(0, 8);
+    .sort((left, right) => right.viewsCount - left.viewsCount)
+    .slice(0, 10);
 
   return {
     featuredStory: mappedStories[0] ?? null,
-    stories: mappedStories,
-    latestStories: mappedStories.slice(0, 10),
-    popularStories,
-    categorySections,
+    latestStories: mappedStories.slice(0, 12),
+    popularStories: popularStories,
     genres,
   };
 }
@@ -363,6 +362,16 @@ export async function getChapterDetail(slug: string, id: string) {
 
   if (!chapter) {
     return null;
+  }
+
+  // Fetch the actual content for THIS chapter
+  const contentData = await prisma.chapter.findUnique({
+    where: { id: Number(id) },
+    select: { content: true }
+  });
+
+  if (contentData) {
+    chapter.content = contentData.content.split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
   }
 
   return {
