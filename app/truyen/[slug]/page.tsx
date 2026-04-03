@@ -62,8 +62,8 @@ export default async function StoryDetailPage({
         </nav>
 
         {/* Story Header Section - Compact & Mobile Optimized */}
-        <section className="bg-white border border-border/80 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-xl shadow-black/[0.02]">
-           <div className="flex flex-col md:flex-row gap-6 lg:gap-12 items-start">
+        <section className="bg-white border border-border/80 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-10 lg:p-12 shadow-xl shadow-black/[0.02]">
+           <div className="flex flex-col md:flex-row gap-6 lg:gap-16 items-stretch">
               
               {/* Mobile: Cover + Title Side-by-Side. Desktop: Cover Only */}
               <div className="flex gap-5 md:contents w-full">
@@ -99,9 +99,9 @@ export default async function StoryDetailPage({
               </div>
 
               {/* Story Info */}
-              <div className="flex-1 flex flex-col w-full">
+              <div className="flex-1 flex flex-col justify-center w-full min-w-0 md:py-4 lg:py-8">
                  {/* Desktop Title */}
-                 <h1 className="hidden md:block font-display novel-title text-3xl md:text-5xl text-foreground mb-6">
+                 <h1 className="hidden md:block font-display novel-title text-3xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] font-bold text-foreground mb-4 lg:mb-6 leading-[1.05] tracking-tight">
                     {story.title}
                  </h1>
                  
@@ -120,27 +120,34 @@ export default async function StoryDetailPage({
                     </button>
                  </div>
 
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 md:py-0 md:border-y border-border md:mb-6 mt-2 md:mt-0">
-                    <div className="space-y-0.5 hidden md:block border-b border-border md:border-none pb-4 md:pb-0">
-                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Tác giả</p>
-                       <p className="text-sm font-bold text-foreground/80 truncate border-l border-accent pl-3 mt-1.5">{story.author}</p>
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-y-4 md:gap-4 py-4 md:py-6 border-y border-border/40 mt-2 md:mt-0 mb-6 w-full divide-x md:divide-x-0 divide-border/40">
+                    <div className="space-y-0.5 hidden md:block">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em] mb-1">Tác giả</p>
+                       <p className="text-sm font-bold text-foreground/80 truncate border-l-2 border-accent pl-2 mt-1.5">{story.author}</p>
                     </div>
-                    <div className="space-y-0.5 hidden md:block border-b border-border md:border-none pb-4 md:pb-0">
-                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Thể loại</p>
-                       <p className="text-sm font-bold text-accent border-l border-accent pl-3 mt-1.5">{story.genre}</p>
+                    <div className="space-y-0.5 hidden md:block border-l border-border/40 pl-4">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em] mb-1">Thể loại</p>
+                       <p className="text-sm font-bold text-accent border-l-2 border-accent pl-2 mt-1.5">{story.genre}</p>
                     </div>
-                    <div className="space-y-0.5 border-t border-border md:border-none pt-4 md:pt-0">
-                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Chương</p>
-                       <p className="text-sm font-bold text-foreground/80 md:border-l md:border-accent md:pl-3 md:mt-1.5">{story.chapterCount}</p>
+                    <div className="space-y-1 md:space-y-0.5 md:border-l border-border/40 md:pl-4">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em] mb-1">Chương</p>
+                       <p className="text-sm font-bold text-foreground/80 md:border-l-2 md:border-accent md:pl-2">{story.chapterCount}</p>
                     </div>
-                    <div className="space-y-0.5 border-t border-border md:border-none pt-4 md:pt-0">
-                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Thời gian</p>
-                       <p className="text-sm font-bold text-foreground/80 md:border-l md:border-accent md:pl-3 md:mt-1.5">{story.totalReadingTime}</p>
+                    <div className="space-y-1 md:space-y-0.5 pl-4 md:border-l border-border/40 md:pl-4">
+                       <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em] mb-1">Thời gian</p>
+                       <p className="text-sm font-bold text-foreground/80 md:border-l-2 md:border-accent md:pl-2">{story.totalReadingTime}</p>
                     </div>
                  </div>
 
+                 {/* Desktop Synopsis Preview to elegantly fill the space */}
+                 <div className="hidden md:block mb-8 max-w-2xl">
+                    <p className="text-sm lg:text-base text-muted/80 leading-relaxed font-medium line-clamp-2 lg:line-clamp-3">
+                       {story.summary || "Thông tin giới thiệu về tác phẩm này đang được cập nhật. Vui lòng quay lại sau."}
+                    </p>
+                 </div>
+
                  {/* Desktop Actions */}
-                 <div className="hidden md:flex flex-row gap-4 pt-2">
+                 <div className="hidden md:flex flex-row gap-4">
                     {firstChapter && (
                        <Link 
                           href={`/truyen/${story.slug}/chuong/${firstChapter.id}`}

@@ -8,6 +8,8 @@ export type Chapter = {
   readingTime: string;
   excerpt: string;
   content: string[];
+  audioUrl?: string | null;
+  videoUrl?: string | null;
 };
 
 export type Story = {
@@ -99,19 +101,21 @@ function mapChapter(chapter: {
   id: number;
   chapterNumber: number;
   title: string;
-  content: string | string[];
+  content?: string | string[];
 }): Chapter {
-  const content = Array.isArray(chapter.content) 
-    ? chapter.content 
-    : (chapter.content || "").split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
+  const content = chapter.content 
+    ? (Array.isArray(chapter.content) 
+      ? chapter.content 
+      : (chapter.content || "").split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean))
+    : [];
 
   return {
     id: String(chapter.id),
     slug: String(chapter.id),
     title: chapter.title,
     order: chapter.chapterNumber,
-    readingTime: buildReadingTime(Array.isArray(content) ? content.join(" ") : ""),
-    excerpt: buildExcerpt(Array.isArray(content) ? content.join(" ") : ""),
+    readingTime: content.length > 0 ? buildReadingTime(content.join(" ")) : "",
+    excerpt: content.length > 0 ? buildExcerpt(content.join(" ")) : "",
     content: content,
   };
 }
@@ -282,7 +286,6 @@ export async function getStoryDetail(slug: string) {
           id: true,
           chapterNumber: true,
           title: true,
-          content: true,
         },
         orderBy: {
           chapterNumber: "asc",
@@ -367,11 +370,16 @@ export async function getChapterDetail(slug: string, id: string) {
   // Fetch the actual content for THIS chapter
   const contentData = await prisma.chapter.findUnique({
     where: { id: Number(id) },
-    select: { content: true }
+    select: { content: true, audioUrl: true, videoUrl: true }
   });
 
   if (contentData) {
     chapter.content = contentData.content.split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
+    const textStr = chapter.content.join(" ");
+    chapter.readingTime = buildReadingTime(textStr);
+    chapter.excerpt = buildExcerpt(textStr);
+    chapter.audioUrl = contentData.audioUrl;
+    chapter.videoUrl = contentData.videoUrl;
   }
 
   return {

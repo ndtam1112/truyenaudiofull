@@ -86,6 +86,43 @@ export default async function ChapterDetailPage({
              </div>
           </div>
 
+          {/* Media Players */}
+          {(chapter.audioUrl || chapter.videoUrl) && (
+            <div className="px-4 md:px-0 pt-8 pb-4 flex flex-col items-center gap-6">
+              {chapter.audioUrl && (
+                <div className="w-full max-w-md bg-surface-strong/50 p-4 rounded-3xl border border-border/50 shadow-inner">
+                   <p className="text-[10px] font-black text-muted mb-3 uppercase tracking-widest text-center">Nghe Audio</p>
+                   <audio 
+                      controls 
+                      controlsList="nodownload"
+                      className="w-full outline-none [&::-webkit-media-controls-enclosure]:bg-white/5 [&::-webkit-media-controls-panel]:bg-transparent" 
+                      src={chapter.audioUrl} 
+                      preload="none"
+                   >
+                      Trình duyệt của bạn không hỗ trợ thẻ audio.
+                   </audio>
+                </div>
+              )}
+              {chapter.videoUrl && (
+                <div className="w-full aspect-video max-w-3xl rounded-2xl overflow-hidden shadow-2xl border border-border/20 bg-black/50 relative">
+                  <iframe 
+                    className="absolute inset-0 w-full h-full"
+                    src={
+                      chapter.videoUrl.includes("youtube.com/watch?v=") 
+                        ? chapter.videoUrl.replace("watch?v=", "embed/").split("&")[0]
+                        : chapter.videoUrl.includes("youtu.be/")
+                        ? chapter.videoUrl.replace("youtu.be/", "www.youtube.com/embed/").split("?")[0]
+                        : chapter.videoUrl
+                    } 
+                    title="Video Player" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen>
+                  </iframe>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Chapter Content */}
           <div className="novel-content px-4 md:px-0">
              {chapter.content.map((line, idx) => (
@@ -95,8 +132,8 @@ export default async function ChapterDetailPage({
              ))}
           </div>
 
-          {/* Chapter Navigation Footer */}
-          <section className="pt-20 border-t border-border">
+          {/* Chapter Navigation Footer (Desktop Only) */}
+          <section className="pt-20 border-t border-border hidden md:block">
              <div className="grid grid-cols-2 gap-4">
                 {previousChapter ? (
                    <Link 
@@ -140,25 +177,82 @@ export default async function ChapterDetailPage({
         </article>
       </main>
 
-      {/* Floating Toolbar for Mobile */}
-      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-foreground/90 backdrop-blur-md rounded-full px-4 py-2 text-white shadow-2xl border border-white/10 md:hidden">
-         <Link href="/" className="p-3 hover:text-accent transition-colors rounded-full" title="Về trang chủ">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      <input type="checkbox" id="toc-modal" className="peer hidden" />
+
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 md:hidden flex items-center justify-between gap-1 bg-[#18181b]/95 backdrop-blur-2xl rounded-full px-2 py-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 transition-all scale-95">
+         {/* Previous Button */}
+         {previousChapter ? (
+            <Link href={`/truyen/${story.slug}/chuong/${previousChapter.id}`} className="flex items-center justify-center p-2.5 rounded-full text-white/80 hover:text-accent transition-colors active:scale-90">
+               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+               </svg>
+            </Link>
+         ) : (
+            <div className="flex items-center justify-center p-2.5 rounded-full text-white/20">
+               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+               </svg>
+            </div>
+         )}
+         
+         <div className="w-[1px] h-4 bg-white/15 mx-1" />
+         
+         {/* TOC Popup Trigger */}
+         <label htmlFor="toc-modal" className="flex items-center gap-2 justify-center px-5 py-2.5 rounded-full bg-accent text-white shadow-lg shadow-accent/20 hover:brightness-110 active:scale-95 transition-all cursor-pointer">
+            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-         </Link>
-         <div className="w-px h-4 bg-white/20 mx-1" />
-         <button className="p-3 hover:text-accent transition-colors rounded-full" title="Danh sách chương">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-         </button>
-         <button className="p-3 hover:text-accent transition-colors rounded-full" title="Cài đặt reading">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-            </svg>
-         </button>
+            <span className="text-[10px] font-black uppercase tracking-[0.1em] mt-0.5">Mục Lục</span>
+         </label>
+
+         <div className="w-[1px] h-4 bg-white/15 mx-1" />
+         
+         {/* Next Button */}
+         {nextChapter ? (
+            <Link href={`/truyen/${story.slug}/chuong/${nextChapter.id}`} className="flex items-center justify-center p-2.5 rounded-full text-white/80 hover:text-accent transition-colors active:scale-90">
+               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+               </svg>
+            </Link>
+         ) : (
+            <div className="flex items-center justify-center p-2.5 rounded-full text-white/20">
+               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+               </svg>
+            </div>
+         )}
       </nav>
+
+      {/* Pure CSS TOC Popup Modal */}
+      <div className="fixed inset-0 z-[100] hidden peer-checked:flex items-end sm:items-center justify-center">
+         <label htmlFor="toc-modal" className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0 cursor-default" />
+         <div className="relative w-full sm:max-w-md h-[80vh] sm:h-[60vh] bg-surface rounded-t-[2rem] sm:rounded-3xl shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col z-10 animate-in slide-in-from-bottom-6 fade-in duration-300">
+            <div className="px-6 py-5 border-b border-border/60 flex items-center justify-between bg-surface-strong/80 backdrop-blur top-0 sticky rounded-t-[2rem]">
+               <h3 className="font-black text-lg novel-title">Mục lục</h3>
+               <label htmlFor="toc-modal" className="w-8 h-8 flex items-center justify-center bg-black/5 rounded-full cursor-pointer hover:bg-black/10 transition-colors text-muted">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+               </label>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-1">
+               {story.chapters.map(c => (
+                  <Link 
+                     href={`/truyen/${story.slug}/chuong/${c.id}`} 
+                     key={c.id} 
+                     className={`block px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
+                        c.id === chapter.id 
+                           ? 'bg-accent/15 text-accent' 
+                           : 'hover:bg-surface-strong text-foreground/80'
+                     }`}
+                  >
+                     <span className="opacity-50 text-[10px] uppercase tracking-widest block mb-0.5">Chương {c.order}</span>
+                     {c.title}
+                  </Link>
+               ))}
+            </div>
+         </div>
+      </div>
       
       <SaveReadingProgress 
         storySlug={story.slug}

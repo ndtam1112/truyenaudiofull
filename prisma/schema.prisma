@@ -35,6 +35,8 @@ model chapter {
   title         String
   content       String   @db.Text
   contentHash   String?  @map("content_hash")
+  audioUrl      String?  @map("audio_url")
+  videoUrl      String?  @map("video_url")
 
   story         story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
