@@ -109,7 +109,7 @@ export default async function StoryDetailPage({
                  <div className="flex gap-3 mb-6 md:hidden w-full">
                     {firstChapter && (
                        <Link 
-                          href={`/truyen/${story.slug}/chuong/${firstChapter.id}`}
+                          href={`/truyen/${story.slug}/chuong/${firstChapter.order}`}
                           className="flex-1 h-12 inline-flex items-center justify-center bg-accent text-white rounded-xl font-bold text-sm shadow-md shadow-accent/20 active:scale-95 transition-all"
                        >
                           Đọc Từ Đầu
@@ -150,7 +150,7 @@ export default async function StoryDetailPage({
                  <div className="hidden md:flex flex-row gap-4">
                     {firstChapter && (
                        <Link 
-                          href={`/truyen/${story.slug}/chuong/${firstChapter.id}`}
+                          href={`/truyen/${story.slug}/chuong/${firstChapter.order}`}
                           className="inline-flex h-14 items-center justify-center bg-accent text-white px-12 rounded-2xl font-bold text-base shadow-xl shadow-accent/30 hover:scale-[1.02] hover:brightness-110 active:scale-95 transition-all"
                        >
                           Đọc Từ Đầu
