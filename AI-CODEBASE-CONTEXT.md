@@ -27,7 +27,7 @@ This project is a web application for reading and listening to audio stories. It
   - `schema.prisma`: The blueprint of the DB.
 - **/scripts**: Standalone Node `mjs` files used to orchestrate site-wide or single-story crawls (e.g., `crawl-site-v3.mjs`, `crawl-one-story.mjs`). These are typically executed via `npm run`.
 
-## 4. Key Database Models (`schema.prisma`)
+## 4. Key Database Models (`schema.prisma`).
 - `story`: Represents a fiction/book. Contains `id, title, slug, sourceUrl, description, cover, author, status`.
 - `chapter`: A chapter of a `story`. Contains `id, storyId, sourceUrl, chapterNumber, title, content`. Notably it also tracks `audioUrl` and `videoUrl` for audio/video playback capabilities. 
 - `genre`: Represents a category.
