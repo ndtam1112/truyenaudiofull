@@ -1,7 +1,10 @@
 import { Outfit, Inter, Noto_Serif, Lexend } from "next/font/google";
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { siteConfig } from "@/lib/site";
+
+const GA_ID = "G-5NQ3TTQCHX";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -59,6 +62,18 @@ export default function RootLayout({
         className="min-h-full font-sans bg-background text-foreground selection:bg-accent/10 selection:text-accent"
         suppressHydrationWarning
       >
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
         {children}
       </body>
     </html>
