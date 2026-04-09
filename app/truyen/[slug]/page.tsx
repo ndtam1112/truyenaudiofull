@@ -28,7 +28,7 @@ export async function generateMetadata({
 
   return buildMetadata({
     title: result.story.title,
-    description: result.story.summary,
+    description: result.story.description,
     path: `/truyen/${result.story.slug}`,
   });
 }
@@ -142,7 +142,7 @@ export default async function StoryDetailPage({
                  {/* Desktop Synopsis Preview to elegantly fill the space */}
                  <div className="hidden md:block mb-8 max-w-2xl">
                     <p className="text-sm lg:text-base text-muted/80 leading-relaxed font-medium line-clamp-2 lg:line-clamp-3">
-                       {story.summary || "Thông tin giới thiệu về tác phẩm này đang được cập nhật. Vui lòng quay lại sau."}
+                       {story.description || "Thông tin giới thiệu về tác phẩm này đang được cập nhật. Vui lòng quay lại sau."}
                     </p>
                  </div>
 
@@ -174,7 +174,7 @@ export default async function StoryDetailPage({
                     Giới thiệu
                  </h2>
                  <div className="novel-content text-muted leading-relaxed whitespace-pre-wrap px-4">
-                    {story.summary || "Thông tin giới thiệu về tác phẩm này đang được cập nhật. Vui lòng quay lại sau."}
+                    {story.description || "Thông tin giới thiệu về tác phẩm này đang được cập nhật. Vui lòng quay lại sau."}
                  </div>
               </section>
 
@@ -192,7 +192,7 @@ export default async function StoryDetailPage({
                     {chapters.map((chapter) => (
                        <Link 
                           key={chapter.id}
-                          href={`/truyen/${story.slug}/chuong/${chapter.id}`}
+                          href={`/truyen/${story.slug}/chuong/${chapter.order}`}
                           className="group py-3 border-b border-border/40 hover:border-accent/40 flex items-center justify-between gap-4 transition-all"
                        >
                           <span className="text-sm font-medium text-foreground group-hover:text-accent transition-colors line-clamp-1">

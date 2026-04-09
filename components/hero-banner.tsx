@@ -92,7 +92,7 @@ export function HeroBanner({ story, topStories = [] }: HeroBannerProps) {
            </div>
 
            <p className="text-sm md:text-base text-muted/80 leading-relaxed mb-10 line-clamp-3 max-w-xl mx-auto md:mx-0 font-medium md:pl-4 md:border-l-2 md:border-accent/40">
-             {story.summary || "Một kiệt tác văn học được hệ thống tuyển chọn gắt gao. Hãy chuẩn bị bước vào một cuộc hành trình dài đầy thú vị."}
+             {story.description || "Một kiệt tác văn học được hệ thống tuyển chọn gắt gao. Hãy chuẩn bị bước vào một cuộc hành trình dài đầy thú vị."}
            </p>
 
            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 w-full">

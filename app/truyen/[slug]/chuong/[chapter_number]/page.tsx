@@ -8,36 +8,36 @@ import { SaveReadingProgress } from "@/components/save-reading-progress";
 type ChapterDetailPageProps = {
   params: Promise<{
     slug: string;
-    id: string;
+    chapter_number: string;
   }>;
 };
 
 export async function generateMetadata({
   params,
 }: ChapterDetailPageProps): Promise<Metadata> {
-  const { slug, id } = await params;
-  const result = await getChapterDetail(slug, id);
+  const { slug, chapter_number } = await params;
+  const result = await getChapterDetail(slug, chapter_number);
 
   if (!result) {
     return buildMetadata({
       title: "Không tìm thấy chương",
       description: "Chương truyện bạn đang tìm không tồn tại hoặc đã bị gỡ bỏ.",
-      path: `/truyen/${slug}/chuong/${id}`,
+      path: `/truyen/${slug}/chuong/${chapter_number}`,
     });
   }
 
   return buildMetadata({
     title: `${result.chapter.title} - ${result.story.title}`,
     description: result.chapter.excerpt,
-    path: `/truyen/${result.story.slug}/chuong/${result.chapter.id}`,
+    path: `/truyen/${result.story.slug}/chuong/${result.chapter.order}`,
   });
 }
 
 export default async function ChapterDetailPage({
   params,
 }: ChapterDetailPageProps) {
-  const { slug, id } = await params;
-  const content = await getChapterDetail(slug, id);
+  const { slug, chapter_number } = await params;
+  const content = await getChapterDetail(slug, chapter_number);
 
   if (!content) {
     notFound();
@@ -137,7 +137,7 @@ export default async function ChapterDetailPage({
              <div className="grid grid-cols-2 gap-4">
                 {previousChapter ? (
                    <Link 
-                      href={`/truyen/${story.slug}/chuong/${previousChapter.id}`}
+                      href={`/truyen/${story.slug}/chuong/${previousChapter.order}`}
                       className="flex flex-col gap-2 p-5 rounded-2xl bg-surface-strong border border-transparent hover:border-accent/40 group transition-all"
                    >
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted/60 group-hover:text-accent/60">Chương trước</span>
@@ -150,7 +150,7 @@ export default async function ChapterDetailPage({
 
                 {nextChapter ? (
                    <Link 
-                      href={`/truyen/${story.slug}/chuong/${nextChapter.id}`}
+                      href={`/truyen/${story.slug}/chuong/${nextChapter.order}`}
                       className="flex flex-col gap-2 p-5 rounded-2xl bg-accent text-white shadow-xl shadow-accent/20 hover:brightness-105 group transition-all text-right"
                    >
                       <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Chương tiếp</span>
@@ -182,7 +182,7 @@ export default async function ChapterDetailPage({
       <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 md:hidden flex items-center justify-between gap-1 bg-[#18181b]/95 backdrop-blur-2xl rounded-full px-2 py-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 transition-all scale-95">
          {/* Previous Button */}
          {previousChapter ? (
-            <Link href={`/truyen/${story.slug}/chuong/${previousChapter.id}`} className="flex items-center justify-center p-2.5 rounded-full text-white/80 hover:text-accent transition-colors active:scale-90">
+            <Link href={`/truyen/${story.slug}/chuong/${previousChapter.order}`} className="flex items-center justify-center p-2.5 rounded-full text-white/80 hover:text-accent transition-colors active:scale-90">
                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                </svg>
@@ -209,7 +209,7 @@ export default async function ChapterDetailPage({
          
          {/* Next Button */}
          {nextChapter ? (
-            <Link href={`/truyen/${story.slug}/chuong/${nextChapter.id}`} className="flex items-center justify-center p-2.5 rounded-full text-white/80 hover:text-accent transition-colors active:scale-90">
+            <Link href={`/truyen/${story.slug}/chuong/${nextChapter.order}`} className="flex items-center justify-center p-2.5 rounded-full text-white/80 hover:text-accent transition-colors active:scale-90">
                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                </svg>
@@ -238,7 +238,7 @@ export default async function ChapterDetailPage({
             <div className="flex-1 overflow-y-auto p-4 space-y-1">
                {story.chapters.map(c => (
                   <Link 
-                     href={`/truyen/${story.slug}/chuong/${c.id}`} 
+                     href={`/truyen/${story.slug}/chuong/${c.order}`} 
                      key={c.id} 
                      className={`block px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
                         c.id === chapter.id 

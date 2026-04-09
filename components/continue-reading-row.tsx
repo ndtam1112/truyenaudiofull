@@ -114,7 +114,7 @@ export function ContinueReadingRow({ stories }: ContinueReadingRowProps) {
                   </p>
                 </div>
                   <Link
-                    href={`/truyen/${story.slug}/chuong/${entry.chapterId}`}
+                    href={`/truyen/${story.slug}/chuong/${entry.chapterOrder}`}
                     className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:brightness-95 active:scale-[0.99]"
                   >
                     Đọc tiếp

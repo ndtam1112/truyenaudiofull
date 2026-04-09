@@ -80,7 +80,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   <h1 className="mt-4 max-w-2xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
                     {featuredStory.title}
                   </h1>
-                  <p className="mt-4 max-w-xl text-base text-white/85">{featuredStory.summary}</p>
+                  <p className="mt-4 max-w-xl text-base text-white/85">{featuredStory.description}</p>
                   <div className="mt-5 flex flex-wrap gap-3 text-sm text-white/85">
                     <span className="rounded-full bg-white/10 px-4 py-2">
                       {featuredStory.genre}

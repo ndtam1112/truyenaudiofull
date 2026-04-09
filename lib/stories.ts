@@ -19,7 +19,7 @@ export type Story = {
   author: string;
   genre: string;
   genres: string[];
-  summary: string;
+  description: string;
   cover: string | null;
   coverLabel: string;
   coverAccentFrom: string;
@@ -140,7 +140,7 @@ function mapStory(story: any): Story {
     author: story.author ?? "Unknown Author",
     genre: genres[0] ?? "Uncategorized",
     genres,
-    summary: story.description ?? "Chua co mo ta cho truyen nay.",
+    description: story.description ?? "Chua co mo ta cho truyen nay.",
     cover: story.cover,
     coverLabel: buildCoverLabel(story.title),
     coverAccentFrom: "#ef4444",
@@ -194,7 +194,7 @@ function filterStories(stories: Story[], query: StoryQuery = {}) {
     const matchesQuery =
       !q ||
       story.title.toLowerCase().includes(q) ||
-      story.summary.toLowerCase().includes(q) ||
+      story.description.toLowerCase().includes(q) ||
       story.author.toLowerCase().includes(q);
 
     const matchesGenre =
@@ -315,10 +315,10 @@ export async function getStoryDetail(slug: string) {
   };
 }
 
-export async function getChapterDetail(slug: string, id: string) {
-  const chapterId = Number(id);
+export async function getChapterDetail(slug: string, chapterNumberStr: string) {
+  const chapterNum = Number(chapterNumberStr);
 
-  if (Number.isNaN(chapterId)) {
+  if (Number.isNaN(chapterNum)) {
     return null;
   }
 
@@ -361,7 +361,7 @@ export async function getChapterDetail(slug: string, id: string) {
   }
 
   const mappedStory = mapStory(story);
-  const chapter = mappedStory.chapters.find((item) => item.id === id) ?? null;
+  const chapter = mappedStory.chapters.find((item) => item.order === chapterNum) ?? null;
 
   if (!chapter) {
     return null;
@@ -369,7 +369,7 @@ export async function getChapterDetail(slug: string, id: string) {
 
   // Fetch the actual content for THIS chapter
   const contentData = await prisma.chapter.findUnique({
-    where: { id: Number(id) },
+    where: { storyId_chapterNumber: { storyId: story.id, chapterNumber: chapterNum } },
     select: { content: true, audioUrl: true, videoUrl: true }
   });
 
